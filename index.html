@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referencia Interactiva de Strings en Python</title>
+    <!-- Chosen Palette: Modern Blue/Teal with warm accents -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Mono:wght@400;500&display=swap');
+        .font-mono {
+            font-family: 'Fira Mono', monospace;
+        }
+        pre code {
+            display: block;
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Fira Mono', monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-size: 0.875rem;
+            border-left: 4px solid #0ea5e9;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .filter-btn.active {
+            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+            color: #ffffff;
+            border-color: #0ea5e9;
+            box-shadow: 0 4px 6px rgba(14, 165, 233, 0.3);
+        }
+        .filter-btn.inactive {
+            background-color: #ffffff;
+            color: #4b5563;
+            border-color: #d1d5db;
+        }
+        .filter-btn:hover:not(.active) {
+            background-color: #f1f5f9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .category-section {
+            transition: all 0.4s ease;
+        }
+        .method-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            position: relative;
+        }
+        .method-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .method-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #0ea5e9, #3b82f6);
+        }
+        .category-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .category-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+        .search-container {
+            position: relative;
+        }
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+        .search-input {
+            padding-left: 3rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+        .table-container {
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .table-container table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .table-container th {
+            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+        }
+        .table-container tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .table-container tr:hover {
+            background-color: #f1f5f9;
+        }
+        .footer {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+        }
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .intro-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        .intro-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #0ea5e9, #3b82f6);
+        }
+        .no-results {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="header sticky top-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <h1 class="text-3xl md:text-4xl font-bold">Referencia Interactiva de Strings en Python</h1>
+            <p class="text-lg md:text-xl text-blue-100 mt-2">Una guía completa para explorar y entender los métodos de string.</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 sm:px-6 lg:px-8 py-8">
+        <section class="intro-card mb-8 p-6 relative">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">¿Qué es esto?</h2>
+            <p class="mb-6 text-gray-700">
+                Bienvenido a la guía interactiva de strings en Python. El reporte original es una lista larga, pero esta aplicación te permite explorar los métodos de forma más eficiente. Usa la barra de búsqueda para encontrar un método específico (como `.split` o `.find`) o usa los botones de filtro para explorar por categorías.
+            </p>
+            <div class="search-container mb-6">
+                <div class="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <input type="search" id="searchInput" placeholder="Buscar método (ej: split, isalpha, lower...)" class="search-input w-full p-4 border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div id="filterButtons" class="flex flex-wrap gap-3">
+                <button class="filter-btn active" data-category="all">Todos</button>
+                <button class="filter-btn inactive" data-category="categoria-operaciones">Operaciones Básicas</button>
+                <button class="filter-btn inactive" data-category="categoria-mayusculas">Mayúsculas/Minúsculas</button>
+                <button class="filter-btn inactive" data-category="categoria-busqueda">Búsqueda y Conteo</button>
+                <button class="filter-btn inactive" data-category="categoria-limpieza">Limpieza y Alineación</button>
+                <button class="filter-btn inactive" data-category="categoria-division">División y Unión</button>
+                <button class="filter-btn inactive" data-category="categoria-verificacion">Verificación (is...)</button>
+                <button class="filter-btn inactive" data-category="categoria-formato">Formato</button>
+            </div>
+        </section>
+
+        <div id="contentArea" class="space-y-12">
+            
+            <section id="categoria-operaciones" class="category-section">
+                <div class="category-header">
+                    <h2 class="text-2xl font-bold">Operaciones Básicas</h2>
+                    <p class="text-blue-100 mt-2">Estas no son métodos, sino operaciones fundamentales que se pueden realizar con strings.</p>
+                </div>
+                <div class="method-card table-container bg-white overflow-x-auto" data-title="Operaciones Básicas Tabla">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-4 text-left">Operación</th>
+                                <th class="px-6 py-4 text-left">Descripción</th>
+                                <th class="px-6 py-4 text-left">Ejemplo</th>
+                                <th class="px-6 py-4 text-left">Resultado</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 text-sm">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-blue-600 font-bold">s1 + s2</td>
+                                <td class="px-6 py-4">Concatenación</td>
+                                <td class="px-6 py-4 font-mono">"Hola" + " " + "Mundo"</td>
+                                <td class="px-6 py-4 font-mono">"Hola Mundo"</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-blue-600 font-bold">s * n</td>
+                                <td class="px-6 py-4">Repetición</td>
+                                <td class="px-6 py-4 font-mono">"Ho" * 3</td>
+                                <td class="px-6 py-4 font-mono">"HoHoHo"</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-blue-600 font-bold">s[i]</td>
+                                <td class="px-6 py-4">Acceso por índice</td>
+                                <td class="px-6 py-4 font-mono">"Python"[0]</td>
+                                <td class="px-6 py-4 font-mono">"P"</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-blue-600 font-bold">s[-1]</td>
+                                <td class="px-6 py-4">Índice negativo</td>
+                                <td class="px-6 py-4 font-mono">"Python"[-1]</td>
+                                <td class="px-6 py-4 font-mono">"n"</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-blue-600 font-bold">s[i:j]</td>
+                                <td class="px-6 py-4">Rebanado (Slicing)</td>
+                                <td class="px-6 py-4 font-mono">"Python"[2:5]</td>
+                                <td class="px-6 py-4 font-mono">"tho"</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-blue-600 font-bold">s[i:j:k]</td>
+                                <td class="px-6 py-4">Slicing con pasos</td>
+                                <td class="px-6 py-4 font-mono">"Python"[0:6:2]</td>
+                                <td class="px-6 py-4 font-mono">"Pto"</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-blue-600 font-bold">len(s)</td>
+                                <td class="px-6 py-4">Longitud</td>
+                                <td class="px-6 py-4 font-mono">len("Hola")</td>
+                                <td class="px-6 py-4 font-mono">4</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-blue-600 font-bold">sub in s</td>
+                                <td class="px-6 py-4">Pertenencia</td>
+                                <td class="px-6 py-4 font-mono">"la" in "Hola"</td>
+                                <td class="px-6 py-4 font-mono">True</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="categoria-mayusculas" class="category-section">
+                <div class="category-header">
+                    <h2 class="text-2xl font-bold">Cambio de Mayúsculas y Minúsculas</h2>
+                    <p class="text-blue-100 mt-2">Métodos para transformar entre mayúsculas y minúsculas.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".lower()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.lower()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Devuelve una copia del string con todos los caracteres en minúsculas.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <span class="text-gray-500">Ninguno.</span>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "HOLA MUNDO"
+print(texto.lower())  # 'hola mundo'</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".upper()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.upper()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Devuelve una copia con todos los caracteres en mayúsculas.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <span class="text-gray-500">Ninguno.</span>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "hola mundo"
+print(texto.upper())  # 'HOLA MUNDO'</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".capitalize()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.capitalize()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Devuelve una copia con el primer carácter en mayúscula y el resto en minúsculas.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <span class="text-gray-500">Ninguno.</span>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "hola. ¿QUÉ TAL?"
+print(texto.capitalize())  # 'Hola. ¿qué tal?'</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".title()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.title()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Devuelve una copia donde el primer carácter de cada palabra está en mayúscula.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <span class="text-gray-500">Ninguno.</span>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "el señor de los anillos"
+print(texto.title())  # 'El Señor De Los Anillos'</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".swapcase()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.swapcase()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Devuelve una copia con mayúsculas y minúsculas intercambiadas.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <span class="text-gray-500">Ninguno.</span>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "Python Es Genial"
+print(texto.swapcase())  # 'pYTHON eS gENIAL'</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".casefold()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.casefold()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Similar a `.lower()`, pero más agresivo para comparaciones en diferentes idiomas (ej: "ß" se convierte en "ss").</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <span class="text-gray-500">Ninguno.</span>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto_aleman = "Straße"
+print(texto_aleman.casefold()) # 'strasse'</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="categoria-busqueda" class="category-section">
+                <div class="category-header">
+                    <h2 class="text-2xl font-bold">Búsqueda y Conteo</h2>
+                    <p class="text-blue-100 mt-2">Métodos para buscar subcadenas y contar ocurrencias.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".find(sub, start, end)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.find(sub, start, end)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Busca `sub` y devuelve el índice de la primera aparición. Devuelve -1 si no la encuentra.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`sub`: String a buscar.</li>
+                                <li>`start` (Opcional): Índice de inicio.</li>
+                                <li>`end` (Opcional): Índice de fin.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "hola mundo"
+print(texto.find("mundo"))  # 5
+print(texto.find("sol"))    # -1</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".rfind(sub, start, end)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.rfind(sub, start, end)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Igual que `.find()`, pero devuelve el índice de la *última* aparición (buscando desde la derecha).</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`sub`: String a buscar.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "hola mundo, adiós mundo"
+print(texto.rfind("mundo")) # 18</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".index(sub, start, end)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.index(sub, start, end)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Igual que `.find()`, pero lanza un error (ValueError) si no encuentra `sub`.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`sub`: String a buscar.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "hola mundo"
+print(texto.index("hola"))  # 0
+# texto.index("sol")  # ValueError</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".rindex(sub, start, end)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.rindex(sub, start, end)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Igual que `.rfind()`, pero lanza un error (ValueError) si no encuentra `sub`.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`sub`: String a buscar.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "hola mundo, adiós mundo"
+print(texto.rindex("mundo")) # 18</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".count(sub, start, end)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.count(sub, start, end)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Devuelve el número de veces que `sub` aparece en el string.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`sub`: String a contar.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "pan, pan y más pan"
+print(texto.count("pan"))  # 3</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".startswith(prefix, start, end)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.startswith(prefix, ...)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Devuelve `True` si el string comienza con `prefix`.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`prefix`: String o tupla de strings a comprobar.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>archivo = "documento.pdf"
+print(archivo.startswith("doc")) # True</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".endswith(suffix, start, end)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.endswith(suffix, ...)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Devuelve `True` si el string termina con `suffix`.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`suffix`: String o tupla de strings a comprobar.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>archivo = "imagen.jpg"
+print(archivo.endswith((".jpg", ".png"))) # True</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="categoria-limpieza" class="category-section">
+                <div class="category-header">
+                    <h2 class="text-2xl font-bold">Limpieza y Alineación</h2>
+                    <p class="text-blue-100 mt-2">Métodos para limpiar espacios y alinear texto.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".strip(chars)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.strip(chars)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Elimina caracteres del inicio y del final. Por defecto, elimina espacios en blanco.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`chars` (Opcional): String de caracteres a eliminar.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>usuario = "   admin@email.com   "
+print(usuario.strip())  # 'admin@email.com'</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".lstrip(chars)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.lstrip(chars)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Igual que `strip()`, pero solo elimina del lado izquierdo (left).</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`chars` (Opcional): Caracteres a eliminar.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "---¡Hola!"
+print(texto.lstrip("-"))  # '¡Hola!'</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".rstrip(chars)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.rstrip(chars)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Igual que `strip()`, pero solo elimina del lado derecho (right).</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`chars` (Opcional): Caracteres a eliminar.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "¡Hola!   "
+print(texto.rstrip())  # '¡Hola!'</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".center(width, fillchar)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.center(width, fillchar)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Centra el string en un `width` total, rellenando con `fillchar`.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`width`: Ancho total.</li>
+                                <li>`fillchar` (Opcional): Carácter de relleno.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>titulo = "MENÚ"
+print(titulo.center(20, "="))</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".ljust(width, fillchar)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.ljust(width, fillchar)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Justifica a la izquierda (padding a la derecha).</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`width`: Ancho total.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print("Texto".ljust(10, "-")) # 'Texto-----'</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".rjust(width, fillchar)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.rjust(width, fillchar)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Justifica a la derecha (padding a la izquierda).</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`width`: Ancho total.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print("Texto".rjust(10, "-")) # '-----Texto'</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".zfill(width)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.zfill(width)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Rellena a la izquierda con ceros (`0`) para alcanzar el `width` total.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`width`: Ancho total.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print("5".zfill(4))  # '0005'
+print("-12".zfill(6)) # '-00012'</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".expandtabs(tabsize)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.expandtabs(tabsize)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Reemplaza los caracteres de tabulación (`\t`) por espacios.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`tabsize` (Opcional): Número de espacios (8 por defecto).</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "col1\tcol2"
+print(texto.expandtabs(4)) # 'col1    col2'</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="categoria-division" class="category-section">
+                <div class="category-header">
+                    <h2 class="text-2xl font-bold">División y Unión</h2>
+                    <p class="text-blue-100 mt-2">Métodos para dividir strings y unir elementos.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".split(sep, maxsplit)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.split(sep, maxsplit)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Divide el string en una lista usando `sep` como separador. Si `sep` se omite, divide por espacios.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`sep` (Opcional): Separador.</li>
+                                <li>`maxsplit` (Opcional): Máximo de divisiones.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>frase = "Hola,mundo"
+print(frase.split(",")) # ['Hola', 'mundo']</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".rsplit(sep, maxsplit)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.rsplit(sep, maxsplit)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Igual que `split()`, pero comienza a dividir desde la derecha (solo relevante con `maxsplit`).</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`maxsplit` (Opcional): Máximo de divisiones.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>linea = "a,b,c,d"
+print(linea.rsplit(",", 2)) # ['a,b', 'c', 'd']</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".splitlines(keepends)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.splitlines(keepends)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Divide el string en una lista por los saltos de línea (`\n`, `\r`, etc.).</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`keepends` (Opcional): `True` para mantener los saltos.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>parrafo = "Línea 1\nLínea 2"
+print(parrafo.splitlines()) # ['Línea 1', 'Línea 2']</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".partition(sep)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.partition(sep)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Busca `sep` y devuelve una tupla de 3: (antes, separador, después).</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`sep`: Separador a buscar.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>email = "usuario@dominio.com"
+print(email.partition("@"))
+# ('usuario', '@', 'dominio.com')</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".rpartition(sep)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.rpartition(sep)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Igual que `partition()`, but busca la *última* aparición de `sep` (desde la derecha).</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`sep`: Separador a buscar.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>path = "/usr/bin/python"
+print(path.rpartition("/"))
+# ('/usr/bin', '/', 'python')</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".join(iterable)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.join(iterable)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Une los elementos de un iterable (ej: lista) en un solo string, usando el string como "pegamento".</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`iterable`: Lista de strings a unir.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>palabras = ['Hola', 'mundo']
+print(" ".join(palabras)) # 'Hola mundo'</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".replace(old, new, count)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.replace(old, new, count)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Reemplaza todas las ocurrencias de `old` por `new`.</p>
+                        <div class="text-sm mb-4">
+                            <strong class="block text-gray-700">Parámetros:</strong>
+                            <ul class="list-disc list-inside text-gray-500">
+                                <li>`old`: String a reemplazar.</li>
+                                <li>`new`: String nuevo.</li>
+                                <li>`count` (Opcional): Máximo de reemplazos.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>texto = "pan, pan y más pan"
+print(texto.replace("pan", "agua", 2))
+# 'agua, agua y más pan'</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="categoria-verificacion" class="category-section">
+                <div class="category-header">
+                    <h2 class="text-2xl font-bold">Verificación de Tipo</h2>
+                    <p class="text-blue-100 mt-2">Métodos que devuelven True/False según el contenido del string.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".islower()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.islower()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> `True` si todos los caracteres con "caja" (letras) son minúsculas.</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print("hola".islower()) # True</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".isupper()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.isupper()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> `True` si todos los caracteres con "caja" son mayúsculas.</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print("HOLA".isupper()) # True</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".istitle()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.istitle()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> `True` si el string tiene formato de título (cada palabra empieza con mayúscula).</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print("El Señor".istitle()) # True</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".isalpha()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.isalpha()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> `True` si todos los caracteres son letras (sin espacios, números o símbolos).</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print("Python".isalpha()) # True
+print("Python 3".isalpha()) # False</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".isdigit()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.isdigit()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> `True` si todos los caracteres son dígitos (0-9).</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print("12345".isdigit()) # True
+print("123.45".isdigit()) # False</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".isdecimal()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.isdecimal()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Similar a `isdigit()`, pero más estricto (solo para caracteres decimales).</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print("123".isdecimal()) # True</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".isnumeric()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.isnumeric()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Más amplio que `isdigit()`. `True` si todos son numéricos (incluye fracciones de unicode, etc.).</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print("123".isnumeric()) # True</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".isalnum()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.isalnum()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> `True` si todos los caracteres son alfanuméricos (letras o números).</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print("Usuario10".isalnum()) # True
+print("Usuario 10".isalnum()) # False</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".isspace()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.isspace()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> `True` si el string solo contiene espacios en blanco (espacio, `\t`, `\n`, etc.).</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print(" \n\t ".isspace()) # True</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".isidentifier()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.isidentifier()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> `True` si el string es un identificador válido de Python (nombre de variable).</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print("mi_variable".isidentifier()) # True</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".isprintable()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.isprintable()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> `True` si todos los caracteres son "imprimibles" (no incluye `\n` o `\t`).</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>print("Hola".isprintable()) # True
+print("Hola\n".isprintable()) # False</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="categoria-formato" class="category-section">
+                <div class="category-header">
+                    <h2 class="text-2xl font-bold">Formato de Strings</h2>
+                    <p class="text-blue-100 mt-2">Métodos para formatear strings con variables y valores.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title="f-strings (Recomendado)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">f-strings (Recomendado)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> La forma moderna y preferida de insertar variables en strings. Se usa poniendo una `f` antes de las comillas.</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>nombre = "Carlos"
+edad = 30
+mensaje = f"Hola, {nombre}, tienes {edad} años."
+print(mensaje)</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".format()">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.format()</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> El método más antiguo para formatear strings, usando llaves `{}` como marcadores de posición.</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>nombre = "Carlos"
+edad = 30
+mensaje = "Hola, {}, tienes {} años.".format(nombre, edad)
+print(mensaje)</code></pre>
+                        </div>
+                    </div>
+                    <div class="method-card bg-white p-6 flex flex-col h-full" data-title=".format_map(mapping)">
+                        <h3 class="text-xl font-bold text-blue-600 font-mono">.format_map(mapping)</h3>
+                        <p class="text-gray-600 mt-2 mb-4"><strong>Para qué sirve:</strong> Similar a `.format()`, pero usa un diccionario para los valores.</p>
+                        <div class="mt-auto">
+                            <strong class="block text-sm text-gray-700 mb-2">Ejemplo:</strong>
+                            <pre><code>datos = {"nombre": "Ana", "edad": 25}
+mensaje = "Nombre: {nombre}".format_map(datos)
+print(mensaje) # 'Nombre: Ana'</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <div id="noResults" class="no-results text-center py-12" style="display: none;">
+                <p class="text-xl font-bold text-amber-800">No se encontraron métodos que coincidan con tu búsqueda.</p>
+                <p class="text-amber-700 mt-2">Intenta con otros términos o selecciona una categoría diferente.</p>
+            </div>
+
+        </div>
+    </main>
+    
+    <footer class="footer text-center py-8 mt-12">
+        <p class="text-blue-100">Aplicación interactiva generada basada en el reporte de strings de Python.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            const filterButtonsContainer = document.getElementById('filterButtons');
+            const contentArea = document.getElementById('contentArea');
+            const noResults = document.getElementById('noResults');
+
+            let searchTerm = '';
+            let activeCategory = 'all';
+
+            function updateDisplay() {
+                let resultsFound = false;
+                const searchTermLower = searchTerm.toLowerCase().trim();
+                
+                const sections = contentArea.querySelectorAll('.category-section');
+                
+                sections.forEach(section => {
+                    let sectionHasVisibleCards = false;
+                    const cards = section.querySelectorAll('.method-card');
+                    
+                    cards.forEach(card => {
+                        const title = card.dataset.title || '';
+                        const titleLower = title.toLowerCase();
+                        const content = card.textContent.toLowerCase();
+                        
+                        const categoryMatch = activeCategory === 'all' || section.id === activeCategory;
+                        const searchMatch = searchTermLower === '' || titleLower.includes(searchTermLower) || content.includes(searchTermLower);
+
+                        if (categoryMatch && searchMatch) {
+                            card.style.display = 'flex';
+                            sectionHasVisibleCards = true;
+                            resultsFound = true;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+
+                    if (sectionHasVisibleCards) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+                
+                if (activeCategory !== 'all') {
+                    const activeSection = document.getElementById(activeCategory);
+                    if (activeSection) {
+                        activeSection.style.display = 'block';
+                    }
+                }
+                
+                noResults.style.display = resultsFound ? 'none' : 'block';
+            }
+
+            searchInput.addEventListener('input', (e) => {
+                searchTerm = e.target.value;
+                updateDisplay();
+            });
+
+            filterButtonsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('filter-btn')) {
+                    const newCategory = e.target.dataset.category;
+                    if (newCategory === activeCategory) {
+                        return;
+                    }
+
+                    activeCategory = newCategory;
+
+                    filterButtonsContainer.querySelectorAll('.filter-btn').forEach(btn => {
+                        if (btn.dataset.category === activeCategory) {
+                            btn.classList.add('active');
+                            btn.classList.remove('inactive');
+                        } else {
+                            btn.classList.add('inactive');
+                            btn.classList.remove('active');
+                        }
+                    });
+
+                    updateDisplay();
+                }
+            });
+
+            updateDisplay();
+        });
+    </script>
+
+</body>
+</html>
